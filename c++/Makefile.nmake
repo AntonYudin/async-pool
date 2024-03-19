@@ -1,0 +1,13 @@
+
+CC=clang-cl.exe
+CCFLAGS=-EHsc
+
+test.exe: test.cxx
+	$(CC) $(CCFLAGS) -o test.exe test.cxx
+
+clean:
+	del test.exe
+
+run: test.exe
+	.\test
+
