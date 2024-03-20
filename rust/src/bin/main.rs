@@ -26,10 +26,12 @@ fn main() {
 
         thread::spawn(move || {
             println!("thread [{}] started", i);
-            pool.process(|resource| {
+            pool.process(move |resource| {
                     println!("got resource [{}]", resource.get().value);
                     thread::sleep(Duration::from_secs(1));
-                    if let Err(error) = tx.send(resource.get().value * 10) {
+                    if i == 1 {
+                        println!("simulate an error by not writing to the channel");
+                    } else if let Err(error) = tx.send(resource.get().value * 10) {
                         println!("error: {}", error);
                     }
             });

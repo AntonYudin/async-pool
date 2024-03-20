@@ -57,7 +57,6 @@ public class Pool<T> {
 
 	public Resource<T> get() throws NoSuchElementException {
 		synchronized (available) {
-
 			if (!available.isEmpty())
 				return wrap(available.remove(0));
 

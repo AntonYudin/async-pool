@@ -17,6 +17,9 @@ class Resource:
 class ResourceNotAvailable(Exception):
     pass
 
+class Error(Exception):
+    pass
+
 class Pool:
     def __init__(self, capacity, creator):
         self.capacity = capacity
@@ -41,15 +44,19 @@ class Pool:
 
 
 class Worker(threading.Thread):
-    def __init__(self, pool):
+    def __init__(self, pool, index):
         threading.Thread.__init__(self)
         self.pool = pool
         self.result = None
+        self.index = index
     def run(self):
         try:
             with self.pool.get() as resource:
                 print(f"got resource {resource}")
                 time.sleep(1)
+                # simulate an error by throwing an exception
+                if self.index == 1:
+                    raise Error("error")
                 self.result = resource.value.value * 10
         except ResourceNotAvailable:
             print(f"could not get resource")
@@ -82,7 +89,7 @@ def main():
     threads = []
 
     for i in range(0, 10):
-        threads.append(Worker(pool))
+        threads.append(Worker(pool, i))
         threads[i].start()
 
     for thread in threads:

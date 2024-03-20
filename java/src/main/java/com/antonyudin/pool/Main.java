@@ -29,6 +29,7 @@ public class Main {
 				try (final var resource = pool.get()) {
 					System.out.format("got resource: [%d]\n", resource.get().value);
 					Thread.sleep(1000);
+					// simulating an error by throwing an exception
 					if (resource.get().value == 1)
 						throw new IllegalArgumentException();
 					return resource.get().value * 10;

@@ -92,11 +92,15 @@ int main() {
 	std::list<std::future<int>> futures;
 
 	for (int i = 0; i < 10; i++) {
-		auto f = [&pool] () {
+		auto f = [&pool] (int index) {
 			std::cerr << "thread started\n";
 
 			auto resource = pool.get();
 			std::cout << "got resource: " << resource->get()->value << std::endl;
+
+			// simulating an error by throwing an exception
+			if (index == 1)
+				throw std::invalid_argument("error");
 
 			std::this_thread::sleep_for(std::chrono::seconds(1));
 			std::cerr << "thread ended\n";
@@ -106,7 +110,7 @@ int main() {
 
 		futures.push_back(
 			std::async(
-				std::launch::async, f
+				std::launch::async, f, i
 			)
 		);
 	}

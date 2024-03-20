@@ -36,6 +36,7 @@ func main() {
 		go func(channel chan int, index int) {
 			defer waitGroup.Done()
 			defer close(channel)
+			defer fmt.Printf("thread [%v] ended\n", index)
 
 			fmt.Printf("thread [%v] started\n", index)
 			var resource, successful = pool.get()
@@ -43,11 +44,14 @@ func main() {
 				defer resource.release()
 				fmt.Printf("got resource: %v\n", resource.get().value)
 				time.Sleep(1 * time.Second)
+				// simulating an error by not writing to the channel
+				if index == 1 {
+					return
+				}
 				channel <- (resource.get().value * 10)
 			} else {
 				println("Could not obtain resource")
 			}
-			fmt.Printf("thread [%v] ended\n", index)
 		} (channels[i], i)
 	}
 
