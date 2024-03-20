@@ -34,6 +34,43 @@ public Resource<T> get() throws NoSuchElementException {
 	throw new NoSuchElementException();
 }
 ```
+The problem is that the `synchronized` keyword does not work with virtual threads.
+
+The solution is to use `java.util.concurrent.locks.ReentrantLock`.
+
+The lock can be wrapped into `java.lang.AutoCloseable` to be compatible with the try-with-resources block.
+
+```
+protected AutoCloseableNoExceptions lock() {
+	lock.lock();
+	return lock::unlock;
+}
+
+protected Resource<T> wrap(final T value) {
+	return new Resource<T>(
+		supplier.get(),
+		(r) -> {
+			try (var l = lock()) {
+				available.add(r.get());
+			}
+		}
+	);
+}
+
+public Resource<T> get() throws NoSuchElementException {
+	try (var l = lock()) {
+		if (!available.isEmpty())
+			return wrap(available.remove(0));
+
+		if (size < capacity) {
+			size++;
+			return wrap(supplier.get());
+		}
+	}
+	throw new NoSuchElementException();
+}
+```
+
 - Go's approach to Mutexes does not look cute 
 ```
 lock.Lock()

@@ -8,9 +8,17 @@ import java.util.NoSuchElementException;
 import java.util.function.Supplier;
 import java.util.function.Consumer;
 
+import java.util.concurrent.locks.ReentrantLock;
+
+
 
 
 public class Pool<T> {
+
+	public interface AutoCloseableNoExceptions extends AutoCloseable {
+		@Override
+		public void close();
+	}
 
 	public static class Resource<T> implements AutoCloseable {
 
@@ -39,6 +47,7 @@ public class Pool<T> {
 	private final Supplier<T> supplier;
 	private final int capacity;
 	private int size = 0;
+	private final ReentrantLock lock = new ReentrantLock();
 
 
 	public Pool(int capacity, final Supplier<T> supplier) {
@@ -46,17 +55,24 @@ public class Pool<T> {
 		this.supplier = supplier;
 	}
 
+	protected AutoCloseableNoExceptions lock() {
+		lock.lock();
+		return lock::unlock;
+	}
+
 	protected Resource<T> wrap(final T value) {
 		return new Resource<T>(
 			supplier.get(),
-			(r) -> { synchronized(available) {
-				available.add(r.get());
-			}}
+			(r) -> {
+				try (var _ = lock()) {
+					available.add(r.get());
+				}
+			}
 		);
 	}
 
 	public Resource<T> get() throws NoSuchElementException {
-		synchronized (available) {
+		try (var _ = lock()) {
 			if (!available.isEmpty())
 				return wrap(available.remove(0));
 
@@ -65,7 +81,6 @@ public class Pool<T> {
 				return wrap(supplier.get());
 			}
 		}
-
 		throw new NoSuchElementException();
 	}
 
