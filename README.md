@@ -1,5 +1,5 @@
 # async-pool
-An asynchronous pool of resources implemented in Rust, Java, C++, and Go.
+An asynchronous pool of resources implemented in Rust, Java, C++, Go, and Python.
 
 The goals are:
 - compare the amount of boilerplate code
