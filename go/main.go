@@ -5,6 +5,8 @@ import "sync"
 import "sync/atomic"
 import "time"
 
+import "main/pool"
+
 
 type Value struct {
 	value int
@@ -21,7 +23,7 @@ func main() {
 
 	var index atomic.Int32
 
-	var pool = newPool[Value](5, func () *Value {
+	var pool = pool.NewPool[Value](5, func () *Value {
 		defer index.Add(1)
 		return newValue(int(index.Load()))
 	})
@@ -39,16 +41,16 @@ func main() {
 			defer fmt.Printf("thread [%v] ended\n", index)
 
 			fmt.Printf("thread [%v] started\n", index)
-			var resource, successful = pool.get()
+			var resource, successful = pool.Get()
 			if successful {
-				defer resource.release()
-				fmt.Printf("got resource: %v\n", resource.get().value)
+				defer resource.Release()
+				fmt.Printf("got resource: %v\n", resource.Get().value)
 				time.Sleep(1 * time.Second)
 				// simulating an error by not writing to the channel
 				if index == 1 {
 					return
 				}
-				channel <- (resource.get().value * 10)
+				channel <- (resource.Get().value * 10)
 			} else {
 				println("Could not obtain resource")
 			}

@@ -33,7 +33,7 @@ make clean run
 
 Go:
 ```sh
-go run pool
+go run main
 ```
 
 Python:

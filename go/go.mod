@@ -1,3 +1,3 @@
-module pool
+module main
 
 go 1.22.1
