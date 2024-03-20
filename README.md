@@ -102,7 +102,7 @@ pub fn process<R, FF: FnMut(&Resource<T>) -> R>(&mut self, mut callback: FF) -> 
    }
 }
 ```
-- The Python's approach to returning data from a thread seems clumsy: you are expected to inherit a custom Thread class and store the results as members of the object. Would using queue.Queue be considered more idiomatic?
+- The Python's approach to returning data from a thread seems clumsy: you are expected to inherit a custom Thread class and store the results as members of the object. Would using queue.Queue be considered more idiomatic in Python?
 Go and Rust use channels to return data from threads.
 Java and C++ use futures.
 - C++, Go, Java and Rust have standard atomic "int" implementations. Python requires using Mutexes for a thread-safe counter.
