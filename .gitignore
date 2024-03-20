@@ -1,4 +1,5 @@
 rust/target
 java/target
+c++/main
 c++/main.obj
 c++/main.exe

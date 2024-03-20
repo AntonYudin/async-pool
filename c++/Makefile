@@ -1,12 +1,12 @@
 
 CC=c++
 
-test: test.cxx
-	$(CC) -o test test.cxx
+main: main.cxx
+	$(CC) -o main main.cxx
 
 clean:
-	rm test
+	rm -f main
 
-run: test
-	./test
+run: main
+	./main
 
