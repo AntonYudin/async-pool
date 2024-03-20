@@ -9,6 +9,38 @@ An asynchronous pool of resources implemented in Rust, Java, C++, Go, and Python
 - attempt to be as idiomatic as possible
 - the resource that is being pooled (the `Value` class or struct in the examples) should not be copied or cloned
 
+### Running
+
+Rust:
+```sh
+cargo run --bin main
+```
+
+Java 21:
+```sh
+mvn clean package exec:java
+```
+
+C++ on EvilOS
+```cmd
+nmake -f Makefile.nmake clean run
+```
+
+C++ on other OSs:
+```sh
+make clean run
+```
+
+Go:
+```sh
+go run pool
+```
+
+Python:
+```sh
+python main.py
+```
+
 ### Findings:
 - Java is not ugly: here is the implementation of the `get()` method of the `Pool`
 ```java
