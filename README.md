@@ -40,7 +40,7 @@ lock.Lock()
 defer lock.Unlock()
 ```
 - It looks like it is impossible to return a resource back into a pool using a Drop trait in Rust without using std::mem:{replace,swap,take}.
-A closure can be used to demarcate the resource access code through.
+A closure can be used to demarcate the resource access code though.
 Here is a Rust implementation of the pool's get/process method:
 ```
 pub fn process<R, FF: FnMut(&Resource<T>) -> R>(&mut self, mut callback: FF) -> Option<R> {
