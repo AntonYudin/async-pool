@@ -1,13 +1,15 @@
 
-CC=clang-cl.exe
+CC=cl.exe
+#CC=clang-cl.exe
 CCFLAGS=-EHsc
+VCVARS=vcvars64
 
-test.exe: test.cxx
-	$(CC) $(CCFLAGS) -o test.exe test.cxx
+main.exe: main.cxx
+	$(VCVARS) & $(CC) $(CCFLAGS) -o main.exe main.cxx
 
 clean:
-	del test.exe
+	del main.exe
 
-run: test.exe
-	.\test
+run: main.exe
+	.\main
 

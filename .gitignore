@@ -1,4 +1,4 @@
 rust/target
 java/target
-c++/test
-c++/test.exe
+c++/main.obj
+c++/main.exe
