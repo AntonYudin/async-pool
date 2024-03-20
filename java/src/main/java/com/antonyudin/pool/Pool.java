@@ -63,11 +63,9 @@ public class Pool<T> {
 	protected Resource<T> wrap(final T value) {
 		return new Resource<T>(
 			supplier.get(),
-			(r) -> {
-				try (var _ = lock()) {
-					available.add(r.get());
-				}
-			}
+			(r) -> { try (var _ = lock()) {
+				available.add(r.get());
+			}}
 		);
 	}
 

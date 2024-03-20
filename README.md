@@ -11,7 +11,7 @@ An asynchronous pool of resources implemented in Rust, Java, C++, Go, and Python
 
 ### Findings:
 - Java is not ugly: here is the implementation of the `get()` method of the `Pool`
-```
+```java
 protected Resource<T> wrap(final T value) {
 	return new Resource<T>(
 		supplier.get(),
@@ -40,7 +40,7 @@ The solution is to use `java.util.concurrent.locks.ReentrantLock`.
 
 The lock can be wrapped into `java.lang.AutoCloseable` to be compatible with the try-with-resources block.
 
-```
+```java
 protected AutoCloseableNoExceptions lock() {
 	lock.lock();
 	return lock::unlock;
@@ -49,11 +49,9 @@ protected AutoCloseableNoExceptions lock() {
 protected Resource<T> wrap(final T value) {
 	return new Resource<T>(
 		supplier.get(),
-		(r) -> {
-			try (var l = lock()) {
-				available.add(r.get());
-			}
-		}
+		(r) -> { try (var l = lock()) {
+			available.add(r.get());
+		}}
 	);
 }
 
@@ -72,14 +70,14 @@ public Resource<T> get() throws NoSuchElementException {
 ```
 
 - Go's approach to Mutexes does not look cute 
-```
+```go
 lock.Lock()
 defer lock.Unlock()
 ```
 - It looks like it is impossible to return a resource back into a pool using a Drop trait in Rust without using std::mem:{replace,swap,take}.
 A closure can be used to demarcate the resource access code though.
 Here is a Rust implementation of the pool's get/process method:
-```
+```rust
 pub fn process<R, FF: FnMut(&Resource<T>) -> R>(&mut self, mut callback: FF) -> Option<R> {
    let resource: Option<Resource<T>>;
    {
