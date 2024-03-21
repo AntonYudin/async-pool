@@ -1,5 +1,7 @@
 
-module;
+#ifndef _MSC_VER
+	module;
+#endif
 
 #include <iostream>
 #include <list>
@@ -12,7 +14,9 @@ module;
 #include <future>
 #include <atomic>
 
-export module main;
+#ifndef _MSC_VER
+	export module main;
+#endif
 
 import pool;
 

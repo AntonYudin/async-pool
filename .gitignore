@@ -3,4 +3,6 @@ java/target
 c++/main
 c++/main.obj
 c++/main.exe
+c++/pool.ifc
+c++/pool.obj
 python/__pycache__

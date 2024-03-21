@@ -1,15 +1,26 @@
 
-CC=cl.exe
-#CC=clang-cl.exe
-CCFLAGS=-EHsc
+CC=clang++
+CCFLAGS=-std=c++20
+
+CC=cl
+CCFLAGS=/std:c++latest /EHsc
 VCVARS=vcvars64
 
-main.exe: main.cxx
-	$(VCVARS) & $(CC) $(CCFLAGS) -o main.exe main.cxx
+
+default: main
+
+pool.ifc: pool.cppm
+	$(VCVARS) & $(CC) $(CCFLAGS) /c /interface /TP pool.cppm
+
+main.exe: pool.ifc pool.obj
+	$(VCVARS) & $(CC) $(CCFLAGS) /reference pool=pool.ifc main.cpp pool.obj
 
 clean:
+	del pool.ifc
+	del pool.obj
+	del main.o
 	del main.exe
 
 run: main.exe
-	.\main
+	./main.exe
 
