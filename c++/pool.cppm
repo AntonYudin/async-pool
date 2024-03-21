@@ -1,3 +1,4 @@
+module;
 
 #include <iostream>
 #include <list>
@@ -10,8 +11,9 @@
 #include <future>
 #include <atomic>
 
+export module pool;
 
-namespace pool {
+export namespace pool {
 
 	template <class T> class Resource {
 

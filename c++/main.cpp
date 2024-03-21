@@ -1,4 +1,6 @@
 
+module;
+
 #include <iostream>
 #include <list>
 #include <functional>
@@ -10,7 +12,9 @@
 #include <future>
 #include <atomic>
 
-#include "pool.cxx"
+export module main;
+
+import pool;
 
 class Value {
 	public:
