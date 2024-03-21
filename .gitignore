@@ -1,8 +1,11 @@
 rust/target
 java/target
 c++/main
+c++/main.o
 c++/main.obj
 c++/main.exe
+c++/pool.o
+c++/pool.pcm
 c++/pool.ifc
 c++/pool.obj
 python/__pycache__
