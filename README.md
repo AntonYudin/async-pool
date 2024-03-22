@@ -136,6 +136,6 @@ pub fn process<R, FF: FnMut(&Resource<T>) -> R>(&mut self, mut callback: FF) -> 
 Go and Rust use channels to return data from threads.
 Java and C++ use futures.
 - C++, Go, Java and Rust have standard atomic "int" implementations. Python requires using Mutexes for a thread-safe counter.
-- RAII is supported by C++ and Rust.
+- [RAII](https://en.wikipedia.org/wiki/Resource_acquisition_is_initialization)  is supported by C++ and Rust.
 Java and Python have a different approach to automatically release resources: `try-with-resources` in Java and `with` statement in Python.
 Go uses ``defer`` to accomplish this. It is less flexible because it defers the call to the end of the function. It is not possible to have a defer call that will work with a scope inside of a function instead of the function's scope.

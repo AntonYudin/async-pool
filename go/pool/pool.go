@@ -68,5 +68,3 @@ func (self Pool[T]) release(value *T) {
 	}
 }
 
-
-
