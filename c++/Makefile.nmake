@@ -18,7 +18,6 @@ main.exe: pool.ifc pool.obj
 clean:
 	del pool.ifc
 	del pool.obj
-	del main.o
 	del main.exe
 
 run: main.exe
