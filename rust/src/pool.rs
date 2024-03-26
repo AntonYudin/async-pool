@@ -69,7 +69,7 @@ pub struct Resource<T> {
 
 impl <T> Drop for Resource<T> {
     fn drop(&mut self) {
-        println!("Resource.drop()");
+        eprintln!("Resource.drop()");
         (self.on_drop)();
     }
 }
@@ -135,16 +135,16 @@ where
             let mut resources = self.resources.lock().unwrap();
             if resources.len() > 0 {
                     resource = resources.pop().unwrap();
-                    println!("popped resource");
+                    eprintln!("popped resource");
             } else if self.capacity > self.size.load(Ordering::Relaxed) {
                     resource = Resource {
                         value: (self.creator)()?,
                         on_drop: Arc::new(|| {
-                               println!("resource custom on_drop");
+                               eprintln!("resource custom on_drop");
                         })
                     };
                     self.size.fetch_add(1, Ordering::Relaxed);
-                    println!("created resource");
+                    eprintln!("created resource");
             } else {
                 return Err(PoolError::AtCapacity(AtCapacityError {capacity: self.capacity}));
             }
@@ -154,7 +154,7 @@ where
         {
             let mut resources = self.resources.lock().unwrap();
             resources.push(resource);
-            println!("pushed resource");
+            eprintln!("pushed resource");
         }
         Ok(result)
     }
