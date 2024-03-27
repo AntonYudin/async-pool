@@ -110,26 +110,31 @@ defer lock.Unlock()
 A closure can be used to demarcate the resource access code though.
 Here is a Rust implementation of the pool's get/process method:
 ```rust
-pub fn process<R, FF: FnMut(&Resource<T>) -> R>(&mut self, mut callback: FF) -> Option<R> {
-   let resource: Option<Resource<T>>;
-   {
-       let mut resources = self.resources.lock().unwrap();
-       resource = resources.pop();
-       println!("popped resource");
-   }
+pub fn process_as_mut<R, FF: FnMut(&mut Resource<T>) -> R>(&mut self, mut callback: FF) -> Result<R, PoolError> {
+	let mut resource: Resource<T>;
 
-   match resource {
-       Some(resource) => {
-           let result = Some(callback(&resource));
-           {
-               let mut resources = self.resources.lock().unwrap();
-               resources.push(resource);
-               println!("pushed resource");
-           }
-           result
-       },
-       None => None
-   }
+	{
+	    let mut resources = self.resources.lock().unwrap();
+	    if resources.len() > 0 {
+		    resource = resources.pop().unwrap();
+	    } else if self.capacity > self.size.load(Ordering::Relaxed) {
+		    resource = Resource {
+			value: (self.creator)()?,
+			on_drop: Arc::new(|| {})
+		    };
+		    self.size.fetch_add(1, Ordering::Relaxed);
+	    } else {
+		return Err(PoolError::AtCapacity(AtCapacityError {capacity: self.capacity}));
+	    }
+	}
+
+	let result = callback(&mut resource);
+	{
+	    let mut resources = self.resources.lock().unwrap();
+	    resources.push(resource);
+	}
+
+	Ok(result)
 }
 ```
 - The Python's approach to returning data from a thread seems clumsy: you are expected to inherit a custom Thread class and store the results as members of the object. Would using queue.Queue be considered more idiomatic in Python?
